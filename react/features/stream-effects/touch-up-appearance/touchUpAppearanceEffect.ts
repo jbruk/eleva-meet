@@ -128,6 +128,13 @@ export class TouchUpAppearanceEffect {
         this.usingCanvasStream = false;
         this.faceLoopRunning = false;
         this.faceMesh = null;
+
+        // Force GC-friendly release of FaceMesh instance
+        try {
+            if ((this as any).faceMesh && typeof (this as any).faceMesh.close === 'function') {
+                (this as any).faceMesh.close();
+            }
+        } catch (_) {}
     }
 
     startEffect(stream: MediaStream): MediaStream {

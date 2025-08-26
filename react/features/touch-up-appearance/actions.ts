@@ -38,11 +38,9 @@ export function toggleTouchUpAppearance(options: Partial<ITouchUpOptions>, jitsi
             let effect: any = (track.getEffect ? track.getEffect() : undefined) || trackToEffect.get(track);
 
             if (!options || options.intensity === 0) {
-                if (effect) {
-                    // Important: Do NOT call stopEffect manually; let Jitsi handle it inside setEffect(undefined)
-                    try { await track.setEffect(undefined); } catch (_) {}
-                    try { trackToEffect.delete(track); } catch (_) {}
-                }
+                // Always detach any current effect from the track to avoid stale/cached attachment
+                try { await track.setEffect(undefined); } catch (_) {}
+                try { if (effect) { trackToEffect.delete(track); } } catch (_) {}
                 dispatch(toggleTouchUpEnabled(false));
                 return;
             }
