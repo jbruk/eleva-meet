@@ -55,6 +55,7 @@ import { shouldDisplayTileView } from '../video-layout/functions.web';
 import { useTileViewButton } from '../video-layout/hooks';
 import VideoQualityButton from '../video-quality/components/VideoQualityButton.web';
 import VideoQualityDialog from '../video-quality/components/VideoQualityDialog.web';
+import { useBeautyButton } from '../beauty/hooks';
 import { useVirtualBackgroundButton } from '../virtual-background/hooks';
 import { useWhiteboardButton } from '../whiteboard/hooks';
 
@@ -285,6 +286,7 @@ export function useToolboxButtons(
     const shareVideo = useSharedVideoButton();
     const whiteboard = useWhiteboardButton();
     const etherpad = useEtherpadButton();
+    const beauty = useBeautyButton();
     const virtualBackground = useVirtualBackgroundButton();
     const speakerStats = useSpeakerStatsButton();
     const shortcuts = useKeyboardShortcutsButton();
@@ -317,6 +319,7 @@ export function useToolboxButtons(
         noisesuppression: noiseSuppression,
         whiteboard,
         etherpad,
+        beauty,
         'select-background': virtualBackground,
         stats: speakerStats,
         settings,

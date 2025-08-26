@@ -1,0 +1,92 @@
+.beauty-button-container {
+    position: relative;
+    display: inline-block;
+}
+
+.beauty-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--toolbar-background);
+    border: 1px solid var(--toolbar-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 1000;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.beauty-menu-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--toolbar-color);
+    background: var(--toolbar-background);
+    border-bottom: 1px solid var(--toolbar-border);
+    text-align: center;
+}
+
+.beauty-menu-options {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.beauty-menu-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: var(--toolbar-color);
+
+    &:hover {
+        background: var(--toolbar-hover-background);
+    }
+
+    &.selected {
+        background: var(--toolbar-active-background);
+        color: var(--toolbar-active-color);
+    }
+}
+
+.beauty-menu-label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.beauty-menu-checkmark {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--toolbar-active-color);
+}
+
+// Beauty effect indicator
+.beauty-indicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--toolbar-active-color);
+    border-radius: 50%;
+    border: 1px solid var(--toolbar-background);
+}
+
+// Beauty level indicator
+.beauty-level-indicator {
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    background: var(--toolbar-active-color);
+    border-radius: 1px;
+    transition: width 0.2s ease;
+
+    &.level-1 { width: 25%; }
+    &.level-2 { width: 50%; }
+    &.level-3 { width: 75%; }
+}

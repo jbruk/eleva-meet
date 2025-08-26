@@ -16,6 +16,7 @@ import { checkBlurSupport, checkVirtualBackgroundEnabled } from '../../../../vir
 import { openSettingsDialog } from '../../../actions';
 import { SETTINGS_TABS } from '../../../constants';
 import { createLocalVideoTracks } from '../../../functions.web';
+import { toggleTouchUpAppearance } from '../../../../touch-up-appearance/actions';
 
 /**
  * The type of the React {@code Component} props of {@link VideoSettingsContent}.
@@ -66,6 +67,12 @@ export interface IProps {
     * Whether or not the virtual background is visible.
     */
     visibleVirtualBackground: boolean;
+
+    /** Touch up appearance enabled state. */
+    touchUpEnabled?: boolean;
+
+    /** Toggle touch up appearance. */
+    onToggleTouchUp?: (enabled: boolean) => void;
 }
 
 const useStyles = makeStyles()(theme => {
@@ -156,7 +163,9 @@ const VideoSettingsContent = ({
     setVideoInputDevice,
     toggleVideoSettings,
     videoDeviceIds,
-    visibleVirtualBackground
+    visibleVirtualBackground,
+    touchUpEnabled,
+    onToggleTouchUp
 }: IProps) => {
     const _componentWasUnmounted = useRef(false);
     const [ trackData, setTrackData ] = useState(new Array(videoDeviceIds.length).fill({
@@ -327,6 +336,22 @@ const VideoSettingsContent = ({
                             onChange = { _onToggleFlip } />
                     </div>
                 )}
+                <div
+                    className = { classes.checkboxContainer }
+                    onClick = { stopPropagation }
+                    role = 'menuitem'>
+                    <Checkbox
+                        checked = { Boolean(touchUpEnabled) }
+                        label = { 'Touch Up Appearance' }
+                        onChange = { () => {
+                            const enabled = !Boolean(touchUpEnabled);
+                            if (onToggleTouchUp) {
+                                onToggleTouchUp(enabled);
+                            } else {
+                                (window as any).APP?.store?.dispatch?.(toggleTouchUpAppearance(enabled ? { intensity: 0.6, brighten: 0.3, smoothness: 0.7 } : { intensity: 0 }));
+                            }
+                        } } />
+                </div>
             </ContextMenuItemGroup>
         </ContextMenu>
     );
@@ -335,12 +360,14 @@ const VideoSettingsContent = ({
 const mapStateToProps = (state: IReduxState) => {
     const { disableLocalVideoFlip } = state['features/base/config'];
     const { localFlipX } = state['features/base/settings'];
+    const touchUp = (state as any)['features/touch-up-appearance'];
 
     return {
         disableLocalVideoFlip,
         localFlipX: Boolean(localFlipX),
         visibleVirtualBackground: checkBlurSupport()
-        && checkVirtualBackgroundEnabled(state)
+        && checkVirtualBackgroundEnabled(state),
+        touchUpEnabled: Boolean(touchUp?.enabled)
     };
 };
 
@@ -351,6 +378,9 @@ const mapDispatchToProps = (dispatch: IStore['dispatch']) => {
             dispatch(updateSettings({
                 localFlipX: flip
             }));
+        },
+        onToggleTouchUp: (enabled: boolean) => {
+            dispatch(toggleTouchUpAppearance(enabled ? { intensity: 0.6, brighten: 0.3, smoothness: 0.7 } : { intensity: 0 }));
         }
     };
 };

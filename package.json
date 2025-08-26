@@ -162,6 +162,7 @@
     "@types/uuid": "8.3.4",
     "@types/w3c-image-capture": "1.0.6",
     "@types/w3c-web-hid": "1.0.3",
+    "@types/webgl2": "^0.0.11",
     "@types/zxcvbn": "4.4.1",
     "@wdio/allure-reporter": "9.16.0",
     "@wdio/cli": "9.16.0",

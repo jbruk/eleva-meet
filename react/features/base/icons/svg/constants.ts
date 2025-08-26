@@ -8,6 +8,7 @@ import { default as IconArrowRight } from './arrow-right.svg';
 import { default as IconArrowUpLarge } from './arrow-up-large.svg';
 import { default as IconArrowUp } from './arrow-up.svg';
 import { default as IconBell } from './bell.svg';
+import { default as IconBeauty } from './beauty.svg';
 import { default as IconBluetooth } from './bluetooth.svg';
 import { default as IconCalendar } from './calendar.svg';
 import { default as IconCameraRefresh } from './camera-refresh.svg';
@@ -120,6 +121,7 @@ export const DEFAULT_ICON: Record<string, any> = {
     IconArrowUpLarge,
     IconAudioOnly,
     IconAudioOnlyOff,
+    IconBeauty,
     IconBluetooth,
     IconBell,
     IconCalendar,
