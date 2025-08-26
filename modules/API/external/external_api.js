@@ -93,6 +93,10 @@ const commands = {
     toggleSubtitles: 'toggle-subtitles',
     toggleTileView: 'toggle-tile-view',
     toggleVirtualBackgroundDialog: 'toggle-virtual-background',
+    // Touch-up appearance and video filters
+    toggleTouchUp: 'toggle-touch-up',
+    setTouchUpOptions: 'set-touch-up-options',
+    setFilter: 'set-filter',
     toggleVideo: 'toggle-video',
     toggleWhiteboard: 'toggle-whiteboard'
 };

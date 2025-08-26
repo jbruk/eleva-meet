@@ -130,6 +130,8 @@ import { muteAllParticipants } from '../../react/features/video-menu/actions';
 import { setVideoQuality } from '../../react/features/video-quality/actions';
 import { toggleBackgroundEffect, toggleBlurredBackgroundEffect } from '../../react/features/virtual-background/actions';
 import { VIRTUAL_BACKGROUND_TYPE } from '../../react/features/virtual-background/constants';
+import { toggleTouchUpAppearance } from '../../react/features/touch-up-appearance/actions';
+import { setBeautyLevel, toggleBeautyEffectAction } from '../../react/features/beauty/actions';
 import { toggleWhiteboard } from '../../react/features/whiteboard/actions.web';
 import { getJitsiMeetTransport } from '../transport';
 
@@ -881,6 +883,35 @@ function initCommands() {
         'toggle-virtual-background': () => {
             APP.store.dispatch(toggleDialog(SettingsDialog, {
                 defaultTab: SETTINGS_TABS.VIRTUAL_BACKGROUND }));
+        },
+        'toggle-touch-up': enabled => {
+            const tracks = APP.store.getState()['features/base/tracks'];
+            const jitsiTrack = getLocalVideoTrack(tracks)?.jitsiTrack;
+
+            if (enabled) {
+                const touch = APP.store.getState()['features/touch-up-appearance'] || {};
+                APP.store.dispatch(toggleTouchUpAppearance({
+                    intensity: typeof touch.intensity === 'number' ? touch.intensity : 0.6,
+                    brighten: typeof touch.brighten === 'number' ? touch.brighten : 0.3,
+                    smoothness: typeof touch.smoothness === 'number' ? touch.smoothness : 0.7
+                }, jitsiTrack));
+            } else {
+                APP.store.dispatch(toggleTouchUpAppearance({ intensity: 0 }, jitsiTrack));
+            }
+        },
+        'set-touch-up-options': options => {
+            const tracks = APP.store.getState()['features/base/tracks'];
+            const jitsiTrack = getLocalVideoTrack(tracks)?.jitsiTrack;
+            APP.store.dispatch(toggleTouchUpAppearance(options || {}, jitsiTrack));
+        },
+        'set-filter': (filterType, strength) => {
+            const levelMap = { none: 0, grayscale: 1, cloudDay: 2, sunlight: 3, moonlight: 4 };
+            const level = typeof filterType === 'string' ? (levelMap[filterType] ?? 0) : (Number(filterType) || 0);
+            if (typeof strength === 'number') {
+                APP.store.dispatch(toggleBeautyEffectAction({ enabled: level > 0, filterType: level, intensity: Math.max(0, Math.min(1, strength)) }));
+            } else {
+                APP.store.dispatch(setBeautyLevel(level));
+            }
         },
         'end-conference': () => {
             APP.store.dispatch(endConference());
