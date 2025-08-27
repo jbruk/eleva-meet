@@ -9,11 +9,12 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "Installing tools..."
+      - echo "Using Node version:"
       - node --version
       - npm --version
+      # Only install extra libs if really required
       - apt-get update -y
-      - apt-get install -y make python3 g++ libpng-dev
+      - apt-get install -y libpng-dev
   pre_build:
     commands:
       - echo "Installing dependencies..."
@@ -25,11 +26,13 @@ phases:
   post_build:
     commands:
       - echo "Build completed on $(date)"
+
 artifacts:
   files:
     - '**/*'
   base-directory: .
   discard-paths: no
+
 cache:
   paths:
     - '/root/.npm/**/*'
