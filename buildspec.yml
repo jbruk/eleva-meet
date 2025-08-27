@@ -1,47 +1,34 @@
 version: 0.2
+
 env:
   variables:
     CI: "true"
+
 phases:
   install:
     runtime-versions:
-      nodejs: 18   # safer for Jitsi build
+      nodejs: 18
     commands:
-      - echo Installing tools
+      - echo "Installing tools..."
       - node --version
       - npm --version
       - apt-get update -y
       - apt-get install -y make python3 g++ libpng-dev
   pre_build:
     commands:
-      - echo Installing dependencies
+      - echo "Installing dependencies..."
       - npm ci --no-audit --no-fund
   build:
     commands:
-      - echo Building Jitsi Meet
+      - echo "Building Jitsi Meet..."
       - make all
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo "Build completed on $(date)"
 artifacts:
   files:
-    - libs/**/*
-    - css/**/*
-    - images/**/*
-    - fonts/**/*
-    - sounds/**/*
-    - static/**/*
-    - lang/**/*
-    - manifest.json
-    - pwa-worker.js
-    - index.html
-    - base.html
-    - body.html
-    - head.html
-    - plugin.head.html
-    - conference.js
-    - config.js
-    - interface_config.js
+    - '**/*'
+  base-directory: .
   discard-paths: no
 cache:
   paths:
