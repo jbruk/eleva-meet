@@ -122,7 +122,7 @@ export function createFramebuffer(gl: WebGLRenderingContext, texture: WebGLTextu
  * @returns WebGL context or null if not supported
  */
 export function getWebGLContext(canvas: HTMLCanvasElement): WebGLRenderingContext | null {
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
     
     if (!gl) {
         console.warn('WebGL not supported');

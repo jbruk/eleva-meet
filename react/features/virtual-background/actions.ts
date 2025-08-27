@@ -23,7 +23,8 @@ export function toggleBackgroundEffect(options: IVirtualBackground, jitsiTrack: 
         if (jitsiTrack) {
             try {
                 if (options.backgroundEffectEnabled) {
-                    await jitsiTrack.setEffect(await createVirtualBackgroundEffect(virtualBackground, dispatch));
+                    // Cast to keep TS happy if type defs lag behind implementation.
+                    await jitsiTrack.setEffect(await (createVirtualBackgroundEffect as any)(virtualBackground, dispatch));
                 } else {
                     await jitsiTrack.setEffect(undefined);
                     dispatch(backgroundEnabled(false));

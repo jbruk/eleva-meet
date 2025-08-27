@@ -28,8 +28,6 @@ export default function BeautyDialog() {
 
     return (
         <Dialog
-            okDisabled = {true}
-            submitDisabled = {true}
             onCancel = {() => dispatch(hideDialog())}
             titleKey = 'toolbar.beauty'>
             <div style = {{ display: 'flex', flexDirection: 'column', gap: 8 }}>

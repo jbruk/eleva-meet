@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { IIconProps } from '../../types';
+import { IIconProps } from '../components/types.web';
 
 /**
  * Beauty filter icon.
  *
  * @returns {ReactElement}
  */
-const IconBeauty = ({ className }: IIconProps) => (
+const IconBeauty = ({ className }: IIconProps & { className?: string }) => (
     <svg
         className = { className }
         height = '24'

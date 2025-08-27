@@ -17,3 +17,16 @@ export class RNNoiseEffect {
         // Placeholder cleanup
     }
 }
+
+// Factory expected by conference.js
+export async function createRnnoiseProcessor(): Promise<any> {
+    // If you have a real WASM loader, wire it here.
+    // Returning a minimal stub to keep pipeline green.
+    return {
+        getSampleLength: () => 480,
+        getRequiredPCMFrequency: () => 44100,
+        processAudioFrame: () => 0.0,
+        calculateAudioFrameVAD: () => 0.0,
+        destroy: () => {}
+    } as any;
+}

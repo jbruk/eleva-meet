@@ -1,5 +1,3 @@
-import { getLogger } from '@jitsi/logger';
+import { getLogger } from '../base/logging/functions';
 
-const logger = getLogger(__filename);
-
-export default logger;
+export default getLogger('features/beauty');

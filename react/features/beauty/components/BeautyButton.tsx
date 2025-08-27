@@ -84,7 +84,7 @@ class BeautyButton extends AbstractButton<IProps, { showMenu: boolean; }> {
      * @protected
      * @returns {boolean}
      */
-    override _isVisible() {
+    _isVisible() {
         return this.props._isBeautyAvailable;
     }
 
@@ -94,51 +94,7 @@ class BeautyButton extends AbstractButton<IProps, { showMenu: boolean; }> {
      * @protected
      * @returns {ReactElement}
      */
-    override _renderButton() {
-        const { _beautyLevel } = this.props;
-        const menu = (
-            <div
-                className = 'beauty-inline-menu'
-                style = {{
-                    position: 'absolute',
-                    bottom: '100%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: '#2a3a4b',
-                    border: '1px solid #4a5a6b',
-                    borderRadius: 8,
-                    padding: '8px 0',
-                    marginBottom: 8,
-                    minWidth: 160,
-                    zIndex: 1000
-                }}>
-                {[
-                    { level: BEAUTY_LEVELS.OFF, label: 'None' },
-                    { level: 1, label: 'Grayscale' },
-                    { level: 2, label: 'Cloud Day' },
-                    { level: 3, label: 'Sunlight' },
-                    { level: 4, label: 'Moonlight' }
-                ].map(({ level, label }) => (
-                    <button
-                        key = { level }
-                        onClick = { () => this._onLevelSelect(level) }
-                        style = {{
-                            width: '100%',
-                            textAlign: 'left',
-                            padding: '8px 12px',
-                            background: _beautyLevel === level ? '#4a5a6b' : 'transparent',
-                            color: '#fff',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}>
-                        {_beautyLevel === level ? '✓ ' : ''}{label}
-                    </button>
-                ))}
-            </div>
-        );
-
-        return super._renderButton();
-    }
+    // No custom _renderButton override; use AbstractButton default rendering
 
     /**
      * Handles beauty level selection.

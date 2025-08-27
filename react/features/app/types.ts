@@ -80,6 +80,8 @@ import { IVideoLayoutState } from '../video-layout/reducer';
 import { IVideoQualityPersistedState, IVideoQualityState } from '../video-quality/reducer';
 import { IVideoSipGW } from '../videosipgw/reducer';
 import { IVirtualBackground } from '../virtual-background/reducer';
+import { IBeautyState } from '../beauty/reducer';
+import { ITouchUpState } from '../touch-up-appearance/reducer';
 import { IVisitorsState } from '../visitors/reducer';
 import { IWebHid } from '../web-hid/reducer';
 import { IWhiteboardState } from '../whiteboard/reducer';
@@ -173,6 +175,8 @@ export interface IReduxState {
     'features/video-quality-persistent-storage': IVideoQualityPersistedState;
     'features/videosipgw': IVideoSipGW;
     'features/virtual-background': IVirtualBackground;
+    'features/beauty': IBeautyState;
+    'features/touch-up-appearance': ITouchUpState;
     'features/visitors': IVisitorsState;
     'features/web-hid': IWebHid;
     'features/whiteboard': IWhiteboardState;
