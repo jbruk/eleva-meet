@@ -4,6 +4,7 @@ import { getLocalVideoTrack, getTrackState } from '../base/tracks/functions.any'
 import { showErrorNotification } from '../notifications/actions';
 
 import { createTouchUpAppearanceEffect, ITouchUpOptions } from '../stream-effects/touch-up-appearance';
+import { toggleBeautyEffect } from '../stream-effects/beauty-webgl/toggleBeauty';
 import { SET_TOUCH_UP_ENABLED, SET_TOUCH_UP_OPTIONS } from './actionTypes';
 
 const trackToEffect = new WeakMap<any, any>();
@@ -44,6 +45,11 @@ export function toggleTouchUpAppearance(options: Partial<ITouchUpOptions>, jitsi
                 dispatch(toggleTouchUpEnabled(false));
                 return;
             }
+
+            // Enforce mutual exclusivity: when enabling touch-up, remove beauty filter effect if present.
+            try {
+                await toggleBeautyEffect({ filterType: 0, intensity: 0 }, store as any);
+            } catch (_ignored) {}
 
             if (effect) {
                 // Ensure the effect is the one applied on track

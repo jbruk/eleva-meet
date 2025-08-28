@@ -17,27 +17,12 @@ export function toggleBeautyEffectAction(options: { enabled: boolean; filterType
         try {
             const store = { dispatch, getState };
 
-            // If touch-up is enabled, don't attach the separate beauty effect.
-            // Instead, forward the filter selection to the touch-up effect which composites filters internally.
+            // Enforce mutual exclusivity: if touch-up is enabled and beauty is being enabled, disable touch-up first.
             const touch = (getState() as any)['features/touch-up-appearance'];
-            if (touch?.enabled) {
-                const filterType = options.filterType;
-                const filterStrength = options.intensity;
-
-                await dispatch<any>(toggleTouchUpAppearance({
-                    filterType,
-                    filterStrength,
-                    intensity: touch.intensity ?? 0.6,
-                    brighten: touch.brighten ?? 0.3,
-                    smoothness: touch.smoothness ?? 0.7
-                }));
-
-                dispatch({
-                    type: SET_BEAUTY_EFFECT_ENABLED,
-                    enabled: options.enabled
-                });
-
-                return;
+            if (options.enabled && touch?.enabled) {
+                await dispatch<any>(toggleTouchUpAppearance({ intensity: 0 }));
+                // Wait a bit for the previous WebGL context to be fully released.
+                await new Promise(r => setTimeout(r, 400));
             }
 
             if (options.enabled) {
@@ -75,25 +60,14 @@ export function setBeautyLevel(level: number, _jitsiTrack?: any) {
     return async function(dispatch: IStore['dispatch'], getState: IStore['getState']) {
         try {
             const store = { dispatch, getState };
-
+            // Enforce mutual exclusivity: if enabling a beauty level (>0) and touch-up is enabled, disable touch-up first.
             const touch = (getState() as any)['features/touch-up-appearance'];
-            if (touch?.enabled) {
-                // Don't attach BeautyEffect while TouchUp is active; forward filter to touch-up instead.
-                const beauty = (getState() as any)['features/beauty'];
-                const filterType = level;
-                const filterStrength = beauty?.intensity ?? (level > 0 ? 1 : 0);
-
-                await dispatch<any>(toggleTouchUpAppearance({
-                    filterType,
-                    filterStrength,
-                    intensity: touch.intensity ?? 0.6,
-                    brighten: touch.brighten ?? 0.3,
-                    smoothness: touch.smoothness ?? 0.7
-                }));
-            } else {
-                // Update the beauty level normally (applies BeautyEffect)
-                await updateBeautyLevel(level, store);
+            if (level > 0 && touch?.enabled) {
+                await dispatch<any>(toggleTouchUpAppearance({ intensity: 0 }));
             }
+
+            // Update the beauty level normally (applies or removes BeautyEffect)
+            await updateBeautyLevel(level, store);
 
             dispatch({
                 type: SET_BEAUTY_LEVEL,

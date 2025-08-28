@@ -2,6 +2,68 @@ import { IStore } from '../../app/types';
 import { glUtils } from '../beauty-webgl/glUtils';
 import { vertexShader, gaussianBlurFragment, compositeFragment, passthroughFragment } from './shaders';
 
+// Global, cached FaceMesh loader to prevent repeated script/asset injections and races.
+let GLOBAL_FACE_MESH_CTOR: any = (window as any).FaceMesh || null;
+let GLOBAL_FACE_MESH_BASE: string | null = null;
+let GLOBAL_FACE_MESH_LOADING: Promise<void> | null = null;
+
+async function ensureFaceMeshLoaded(): Promise<{ ctor: any; base: string } | null> {
+    if (GLOBAL_FACE_MESH_CTOR && GLOBAL_FACE_MESH_BASE) {
+        return { ctor: GLOBAL_FACE_MESH_CTOR, base: GLOBAL_FACE_MESH_BASE };
+    }
+
+    if (!GLOBAL_FACE_MESH_LOADING) {
+        GLOBAL_FACE_MESH_LOADING = (async () => {
+            const g: any = (window as any);
+            const candidates = [
+                'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js',
+                'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1635861595/face_mesh.js',
+                'https://unpkg.com/@mediapipe/face_mesh@latest/face_mesh.js'
+            ];
+            for (const url of candidates) {
+                try {
+                    const candidateBase = url.substring(0, url.lastIndexOf('/'));
+                    // Prepare expected Emscripten globals for packed assets loader.
+                    g.Module = g.Module || {};
+                    if (typeof g.Module.locateFile !== 'function') {
+                        g.Module.locateFile = (file: string) => `${candidateBase}/${file}`;
+                    }
+                    if (!g.Module.filePackagePrefixURL) {
+                        g.Module.filePackagePrefixURL = candidateBase + '/';
+                    }
+                    g.Module.filePackageRequests = g.Module.filePackageRequests || {};
+                    g.Module.filePackages = g.Module.filePackages || {};
+                    g.Module.dataFileDownloads = g.Module.dataFileDownloads || {};
+
+                    await new Promise<void>((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = url;
+                        s.crossOrigin = 'anonymous';
+                        s.async = true;
+                        s.onload = () => resolve();
+                        s.onerror = () => reject(new Error('Failed to load MediaPipe FaceMesh'));
+                        document.head.appendChild(s);
+                    });
+                    GLOBAL_FACE_MESH_CTOR = g.FaceMesh;
+                    if (GLOBAL_FACE_MESH_CTOR) {
+                        GLOBAL_FACE_MESH_BASE = candidateBase;
+                        return; // success
+                    }
+                } catch (_) {
+                    // Try next candidate
+                }
+            }
+            // If we reach here, loading failed; leave ctor/base null
+        })();
+    }
+
+    await GLOBAL_FACE_MESH_LOADING;
+    if (GLOBAL_FACE_MESH_CTOR && GLOBAL_FACE_MESH_BASE) {
+        return { ctor: GLOBAL_FACE_MESH_CTOR, base: GLOBAL_FACE_MESH_BASE };
+    }
+    return null;
+}
+
 type Landmark = { x: number; y: number; z?: number };
 
 export interface ITouchUpOptions {
@@ -122,6 +184,15 @@ export class TouchUpAppearanceEffect {
             this.video = null;
         }
 
+        // Proactively lose the WebGL context to free GPU resources before another effect starts
+        if (this.gl) {
+            try {
+                const lose = (this.gl as any).getExtension && (this.gl as any).getExtension('WEBGL_lose_context');
+                if (lose && typeof lose.loseContext === 'function') {
+                    lose.loseContext();
+                }
+            } catch (_) {}
+        }
         try { this.canvas.remove(); } catch (_) {}
         this.cleanupGL();
         this.stream = null;
@@ -138,6 +209,13 @@ export class TouchUpAppearanceEffect {
     }
 
     startEffect(stream: MediaStream): MediaStream {
+        // Guard: do not apply this video effect to audio-only streams.
+        if (!stream || stream.getVideoTracks().length === 0) {
+            this.originalStream = stream;
+            this.enabled = false;
+            this.usingCanvasStream = false;
+            return stream;
+        }
         if (this.enabled && this.stream) {
             return this.stream as MediaStream;
         }
@@ -208,26 +286,13 @@ export class TouchUpAppearanceEffect {
             return;
         }
         try {
-            let FaceMeshCtor: any = (window as any).FaceMesh;
-            if (!FaceMeshCtor) {
-                await new Promise<void>((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1635861595/face_mesh.js';
-                    s.crossOrigin = 'anonymous';
-                    s.async = true;
-                    s.onload = () => resolve();
-                    s.onerror = () => reject(new Error('Failed to load MediaPipe FaceMesh'));
-                    document.head.appendChild(s);
-                });
-                FaceMeshCtor = (window as any).FaceMesh;
-            }
-
-            if (!FaceMeshCtor) {
+            const loaded = await ensureFaceMeshLoaded();
+            if (!loaded) {
                 this.useFallbackMask = true;
                 return;
             }
-
-            const BASE = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1635861595';
+            const { ctor: FaceMeshCtor, base } = loaded;
+            const BASE = base;
             this.faceMesh = new FaceMeshCtor({ locateFile: (file: string) => `${BASE}/${file}` });
             this.faceMesh.setOptions({
                 maxNumFaces: 1,

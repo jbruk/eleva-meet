@@ -412,16 +412,23 @@ export class BeautyEffectWebGL {
     /**
      * Safe WebGL initialization that handles errors gracefully
      */
-    private safeInitWebGL(): void {
-        try {
-            this.initWebGL().catch(error => {
+    private async safeInitWebGL(retries = 3): Promise<void> {
+        for (let i = 0; i < retries; i++) {
+            try {
+                await this.initWebGL();
+                return;
+            } catch (error: any) {
+                if (typeof error?.message === 'string' && error.message.includes('context is lost')) {
+                    console.warn(`WebGL context lost on init (attempt ${i + 1}/${retries}), retrying...`);
+                    // Give the GPU a bit more time before retrying.
+                    await new Promise(r => setTimeout(r, 300));
+                    continue;
+                }
                 console.error('WebGL initialization failed, effect will not work:', error);
-                // Don't throw - let the effect continue without filters
-            });
-        } catch (error) {
-            console.error('WebGL initialization failed synchronously:', error);
-            // Don't throw - let the effect continue without filters
+                return;
+            }
         }
+        console.error('WebGL initialization failed after retries, giving up.');
     }
 
     /**

@@ -40,14 +40,16 @@ export async function toggleBeautyEffect(options: IBeautyEffectOptions, store: I
         let effect: any = appliedEffect || trackToEffect.get(track);
 
         if (!options.filterType || !options.intensity) {
-            // Passthrough: keep the running effect but set uniforms to no-op to avoid track swaps.
-            if (effect && effect.updateOptions) {
-                effect.updateOptions({ filterType: 0, intensity: 0 });
-                trackToEffect.set(track, effect);
-                return;
+            // Disable/remove beauty effect completely.
+            if (effect) {
+                try {
+                    effect.stop?.();
+                } catch (_) {}
+                try {
+                    await track.setEffect(undefined);
+                } catch (_) {}
+                trackToEffect.delete(track);
             }
-
-            // If no effect exists, do nothing (raw camera is already in use)
             return;
         }
 
