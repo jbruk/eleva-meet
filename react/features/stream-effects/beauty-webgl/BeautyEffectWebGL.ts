@@ -4,7 +4,7 @@ import { glUtils } from './glUtils';
 import { fragmentShader, vertexShader } from './shaders';
 
 export interface IBeautyEffectOptions {
-    filterType: number; // 0 = none, 1 = grayscale, 2 = cloudDay, 3 = sunlight, 4 = moonlight
+    filterType: number; // 0 = none, 1 = grayscale, 2 = cloudDay, 3 = sunlight, 4 = moonlight, 5 = beautySmooth
     intensity: number; // 0.0 to 1.0 for filter strength
 }
 

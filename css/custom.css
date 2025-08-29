@@ -1,0 +1,416 @@
+/* Jitsi Chat Only - Blue Gradient Theme - Clean Version */
+
+/* Hide the tab toggle section completely */
+.css-10rokvf-container[role="tablist"] {
+    display: none !important;
+}
+
+/* Hide polls panel completely */
+.css-191yffp-pollsPanel,
+#polls-tab-panel {
+    display: none !important;
+}
+
+/* Chat Header Styling */
+.chat-header {
+    background: linear-gradient(to right, #5566fe, #4363ff, #288efc) !important;
+    color: white !important;
+    padding: 16px 20px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0 !important;
+}
+
+.chat-header span[role="heading"] {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.chat-header .jitsi-icon {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 50% !important;
+    padding: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.chat-header .jitsi-icon:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.05) !important;
+}
+
+.chat-header .jitsi-icon svg {
+    fill: white !important;
+}
+
+/* Main Chat Panel */
+.css-1ee6bap-chatPanel {
+    background: white !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Chat Conversation Container */
+#chat-conversation-container {
+    flex: 1 !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+}
+
+#chatconversation {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 8px !important;
+}
+
+/* Chat Message Styling - Using actual structure */
+.chatmessage {
+    margin-bottom: 12px !important;
+    max-width: 85% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    animation: messageSlideIn 0.3s ease-out !important;
+    padding: 12px 16px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Local User Messages (Sent) - Blue outer wrapper */
+.chatmessage.local {
+    align-self: flex-end !important;
+    align-items: flex-end !important;
+    background: linear-gradient(135deg, #5566fe, #4363ff, #288efc) !important;
+    color: white !important;
+    border-bottom-right-radius: 6px !important;
+    margin-left: 20px !important;
+    box-shadow: 0 2px 6px rgba(67, 99, 255, 0.3) !important;
+}
+
+/* Remote User Messages (Received) - Grey outer wrapper */
+.chatmessage:not(.local) {
+    align-self: flex-start !important;
+    align-items: flex-start !important;
+    background: #f1f5f9 !important;
+    color: #1e293b !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    border-bottom-left-radius: 6px !important;
+    margin-right: 20px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Display Name Styling */
+.display-name {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    margin-bottom: 4px !important;
+    padding: 0 4px !important;
+}
+
+/* Display name color for local messages */
+.chatmessage.local .display-name {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Display name color for remote messages */
+.chatmessage:not(.local) .display-name {
+    color: #6b7280 !important;
+}
+
+/* Message Content Container */
+.messagecontent {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+}
+
+/* User Message Bubble - Remove background since outer wrapper has it now */
+.usermessage {
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    word-wrap: break-word !important;
+    position: relative !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+/* Message Text */
+.usermessage p {
+    margin: 0 !important;
+    color: inherit !important;
+}
+
+/* Screen Reader Text */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Message Footer */
+.css-n0sz5u-chatMessageFooter {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: 8px !important;
+    padding-top: 4px !important;
+}
+
+/* Timestamp */
+.timestamp p {
+    font-size: 11px !important;
+    margin: 0 !important;
+    opacity: 0.8 !important;
+}
+
+/* Timestamp for local messages */
+.chatmessage.local .timestamp p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Timestamp for received messages */
+.chatmessage:not(.local) .timestamp p {
+    color: #94a3b8 !important;
+}
+
+/* Chat Input Container */
+.chat-input-container {
+    background: white !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 16px !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Input Field Container - Remove inner styling */
+.css-1b1hdkw-inputContainer,
+.chat-input {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    width: 100% !important;
+}
+
+/* Style the outer input container instead */
+.chat-input-container {
+    background: white !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 16px !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chat-input-container > div {
+    background: #f8fafc !important;
+    border: 2px solid transparent !important;
+    border-radius: 24px !important;
+    padding: 8px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chat-input-container > div:focus-within {
+    border-color: #4363ff !important;
+    background: white !important;
+    box-shadow: 0 0 0 3px rgba(67, 99, 255, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Emoji Button */
+.css-1y59anu-icon-iconClickable {
+    background: linear-gradient(135deg, rgba(85, 102, 254, 0.1), rgba(40, 142, 252, 0.1)) !important;
+    border-radius: 50% !important;
+    padding: 8px !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.css-1y59anu-icon-iconClickable:hover {
+    background: linear-gradient(135deg, rgba(85, 102, 254, 0.2), rgba(40, 142, 252, 0.2)) !important;
+    transform: scale(1.05) !important;
+}
+
+.css-1y59anu-icon-iconClickable svg {
+    fill: #4363ff !important;
+}
+
+/* Text Input */
+.css-17h030j-input,
+#chat-input-messagebox,
+textarea[placeholder*="message"] {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    flex: 1 !important;
+    color: #1e293b !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    resize: none !important;
+    font-family: inherit !important;
+}
+
+.css-17h030j-input::placeholder,
+#chat-input-messagebox::placeholder,
+textarea[placeholder*="message"]::placeholder {
+    color: #94a3b8 !important;
+    font-weight: 400 !important;
+}
+
+/* Send Button */
+.css-j7vihb-button-primary-disabled-iconButton-medium,
+button[aria-label="Send"],
+.iconButton {
+    background: linear-gradient(135deg, #5566fe, #4363ff, #288efc) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    padding: 10px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(67, 99, 255, 0.3) !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+}
+
+.css-j7vihb-button-primary-disabled-iconButton-medium:not([disabled]):hover,
+button[aria-label="Send"]:not([disabled]):hover,
+.iconButton:not([disabled]):hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 8px rgba(67, 99, 255, 0.4) !important;
+}
+
+.css-j7vihb-button-primary-disabled-iconButton-medium[disabled],
+button[aria-label="Send"][disabled],
+.iconButton[disabled] {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.css-j7vihb-button-primary-disabled-iconButton-medium svg,
+button[aria-label="Send"] svg,
+.iconButton svg {
+    fill: white !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* Scrollbar Styling */
+#chat-conversation-container::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+#chat-conversation-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: 3px !important;
+}
+
+#chat-conversation-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #5566fe, #288efc) !important;
+    border-radius: 3px !important;
+}
+
+#chat-conversation-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #4363ff, #5566fe) !important;
+}
+
+/* Animation for new messages */
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .chatmessage {
+        max-width: 90% !important;
+    }
+    
+    .chatmessage {
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+    }
+    
+    .chat-header {
+        padding: 12px 16px !important;
+    }
+    
+    .chat-header span[role="heading"] {
+        font-size: 16px !important;
+    }
+    
+    .chat-input-container {
+        padding: 12px !important;
+    }
+}
+
+/* Ensure proper container structure */
+.css-g034pt-container {
+    background: white !important;
+    border-radius: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+
+/* Fix receiver message text visibility */
+.chatmessage:not(.local) .usermessage,
+.chatmessage:not(.local) .usermessage p {
+    color: #1f2937 !important;
+}
+
+
+/* Filmstrip Participants Panel Styling */
+.filmstrip {
+    background: rgba(67, 99, 255, 0.05) !important;
+}
+
+/* Individual participant video containers */
+.videocontainer {
+    background: rgba(67, 99, 255, 0.1) !important;
+    border: 2px solid rgba(67, 99, 255, 0.3) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.videocontainer:hover {
+    border-color: rgba(67, 99, 255, 0.6) !important;
+    background: rgba(67, 99, 255, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(67, 99, 255, 0.4) !important;
+}
+
+/* Container background styling */
+.css-gkd3ep-withI18nextTranslation_due_-containerBackground {
+    background: rgba(67, 99, 255, 0.08) !important;
+    border-radius: 12px !important;
+}
+
+/* Filmstrip background */
+.css-1iam9u8-withI18nextTranslation_Connect_gue__-filmstripBackground {
+    background: rgba(67, 99, 255, 0.03) !important;
+}

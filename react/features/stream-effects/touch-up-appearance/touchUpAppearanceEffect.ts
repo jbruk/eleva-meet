@@ -511,6 +511,10 @@ export class TouchUpAppearanceEffect {
 
         const lm = this.lastLandmarks;
         const indices = this.getSkinHullIndices(lm);
+        const leftEye = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246];
+        const rightEye = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398];
+        const nose = [1,2,5,4,6,19,20,94,125,141,235,236,198,197,196,3,51,248,456,281,363,360,279,358,294,331,279,303,304,270,409,291,375,321,405,314,17,84,181,91,146];
+        const mouth = [61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,91,146];
         const tctx = this.maskTmpCtx;
         if (tctx) {
             tctx.clearRect(0, 0, w, h);
@@ -527,6 +531,43 @@ export class TouchUpAppearanceEffect {
                 }
                 tctx.closePath();
                 tctx.fill();
+
+                // Carve out eyes, nose, and mouth (black polygons) to keep them sharp
+                const carve = (arr: number[]) => {
+                    if (arr.length === 0) return;
+                    tctx.beginPath();
+                    const p0e = lm[arr[0]];
+                    tctx.moveTo(p0e.x, p0e.y);
+                    for (let j = 1; j < arr.length; j++) {
+                        const pp = lm[arr[j]];
+                        tctx.lineTo(pp.x, pp.y);
+                    }
+                    tctx.closePath();
+                    tctx.fillStyle = 'black';
+                    tctx.fill();
+                    tctx.fillStyle = 'white';
+                };
+                carve(leftEye);
+                carve(rightEye);
+                carve(nose);
+                carve(mouth);
+                
+                // Additionally carve a rectangular band above and below the mouth to avoid blur on moustache / beard area.
+                if (mouth.length > 0) {
+                    let minX = lm[mouth[0]].x, maxX = lm[mouth[0]].x;
+                    let minY = lm[mouth[0]].y, maxY = lm[mouth[0]].y;
+                    for (let k = 1; k < mouth.length; k++) {
+                        const mpt = lm[mouth[k]];
+                        if (mpt.x < minX) minX = mpt.x;
+                        if (mpt.x > maxX) maxX = mpt.x;
+                        if (mpt.y < minY) minY = mpt.y;
+                        if (mpt.y > maxY) maxY = mpt.y;
+                    }
+                    const padY = (maxY - minY) * 0.6; // extend band 60% mouth height up/down
+                    tctx.fillStyle = 'black';
+                    tctx.fillRect(minX - 4, minY - padY, (maxX - minX) + 8, (maxY - minY) + padY * 2);
+                    tctx.fillStyle = 'white';
+                }
             }
             ctx.save();
             (ctx as any).filter = 'blur(6px)';

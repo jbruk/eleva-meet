@@ -23,7 +23,7 @@ export const fragmentShader = `
     
     uniform sampler2D u_texture;
     uniform vec2 u_resolution;
-    uniform float u_filterType; // 0 = none, 1 = grayscale, 2 = cloudDay, 3 = sunlight, 4 = moonlight
+    uniform float u_filterType; // 0 = none, 1 = grayscale, 2 = cloudDay, 3 = sunlight, 4 = moonlight, 5 = beautySmooth
     uniform float u_intensity; // 0.0 to 1.0 for filter strength
     
     varying vec2 v_texCoord;
@@ -85,6 +85,30 @@ export const fragmentShader = `
         
         return mix(color, dreamy, intensity);
     }
+
+    // ---- Beauty smoothening (Kawase-like blur) ----
+    // Approximates a large-radius Gaussian/Kawase blur with a single pass and 9 taps.
+    vec3 applyBeautySmooth(vec2 uv, float radius, float strength) {
+        vec2 texel = 1.0 / u_resolution;
+
+        vec3 col = vec3(0.0);
+        col += texture2D(u_texture, uv).rgb * 0.227027;
+        col += texture2D(u_texture, uv + vec2( texel.x * radius,  texel.y * radius)).rgb * 0.1945946;
+        col += texture2D(u_texture, uv + vec2(-texel.x * radius,  texel.y * radius)).rgb * 0.1945946;
+        col += texture2D(u_texture, uv + vec2( texel.x * radius, -texel.y * radius)).rgb * 0.1945946;
+        col += texture2D(u_texture, uv + vec2(-texel.x * radius, -texel.y * radius)).rgb * 0.1945946;
+
+        // 4 more taps at cardinal directions for a better approximation
+        col += texture2D(u_texture, uv + vec2( texel.x * radius * 1.5, 0.0)).rgb * 0.1216216;
+        col += texture2D(u_texture, uv + vec2(-texel.x * radius * 1.5, 0.0)).rgb * 0.1216216;
+        col += texture2D(u_texture, uv + vec2(0.0,  texel.y * radius * 1.5)).rgb * 0.1216216;
+        col += texture2D(u_texture, uv + vec2(0.0, -texel.y * radius * 1.5)).rgb * 0.1216216;
+
+        // Blend with original to avoid excessive plastic look
+        vec3 orig = texture2D(u_texture, uv).rgb;
+        // Further reduce blur contribution to 15% of requested strength
+        return mix(orig, col, strength * 0.15);
+    }
     
     void main() {
         vec2 uv = v_texCoord;
@@ -102,6 +126,12 @@ export const fragmentShader = `
                 filteredColor = applySunlight(originalColor, u_intensity);
             } else if (u_filterType == 4.0) {
                 filteredColor = applyMoonlight(originalColor, u_intensity);
+            } else if (u_filterType == 5.0) {
+                // Even subtler radius mapping 0.12–0.6 px
+                float radius = mix(0.12, 0.6, u_intensity);
+                filteredColor = applyBeautySmooth(uv, radius, u_intensity);
+                // Slight brightness boost capped to avoid clipping
+                filteredColor = min(filteredColor * (1.0 + 0.05 * u_intensity), vec3(1.0));
             }
         }
         
